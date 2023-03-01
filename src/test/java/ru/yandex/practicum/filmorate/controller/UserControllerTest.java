@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -27,13 +28,14 @@ class UserControllerTest {
     @Autowired
     private MockMvc mvc;
     ObjectMapper om = new ObjectMapper();
+    UserController userController = new UserController();
 
     @BeforeEach
     void setup() {
-        mvc = MockMvcBuilders.standaloneSetup(new UserController()).build();
+        mvc = MockMvcBuilders.standaloneSetup(userController).build();
         om.registerModule(new JavaTimeModule());
-        UserController.users.clear();
-        UserController.idUser = 1;
+        userController.setUsers(new HashMap<>());
+        userController.setIdUser(1);
     }
 
     @SneakyThrows
@@ -44,7 +46,7 @@ class UserControllerTest {
         user1_1.setLogin("login1");
         user1_1.setName("Name1");
         user1_1.setBirthday(LocalDate.of(2015, 3, 15));
-        User user1 = UserController.create(user1_1);
+        User user1 = userController.create(user1_1);
         String jsonRequest = om.writeValueAsString(user1);
         mvc.perform(get("/users")
                         .contentType("application/json")
@@ -59,7 +61,7 @@ class UserControllerTest {
         user2_1.setLogin("login2");
         user2_1.setName("Name2");
         user2_1.setBirthday(LocalDate.of(2015, 3, 15));
-        User user2 = UserController.create(user2_1);
+        User user2 = userController.create(user2_1);
         String jsonRequest2 = om.writeValueAsString(user2);
         mvc.perform(get("/users")
                         .contentType("application/json")
@@ -72,7 +74,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createEmptyUser(){
+    void createEmptyUser() {
         String jsonRequest = om.writeValueAsString(" ");
 
         mvc.perform(post("/users")
@@ -84,7 +86,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createNormalUser(){
+    void createNormalUser() {
         User user1 = new User();
         user1.setEmail("email1@yandex.ru");
         user1.setLogin("login1");
@@ -103,7 +105,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createUserWrongEmail(){
+    void createUserWrongEmail() {
         User user1 = new User();
         user1.setEmail("email1yandex.ru");
         user1.setLogin("login1");
@@ -120,7 +122,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createUserWrongLogin(){
+    void createUserWrongLogin() {
         User user1 = new User();
         user1.setEmail("email1@yandex.ru");
         user1.setLogin("lo gi n1");
@@ -137,7 +139,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void createUserWrongBirthday(){
+    void createUserWrongBirthday() {
         User user1 = new User();
         user1.setEmail("email1@yandex.ru");
         user1.setLogin("login1");
@@ -154,13 +156,13 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void putNormalUser(){
+    void putNormalUser() {
         User user1_1 = new User();
         user1_1.setEmail("email1@yandex.ru");
         user1_1.setLogin("login1");
         user1_1.setName("Name1");
         user1_1.setBirthday(LocalDate.of(2015, 3, 15));
-        User user1 = UserController.create(user1_1);
+        User user1 = userController.create(user1_1);
         User user2_1 = new User(1, "email2@yandex.ru", "login2", "Name2", LocalDate.of(2015, 3, 15));
         String jsonRequest = om.writeValueAsString(user2_1);
 
@@ -181,7 +183,7 @@ class UserControllerTest {
         user1_1.setLogin("login1");
         user1_1.setName("Name1");
         user1_1.setBirthday(LocalDate.of(2015, 3, 15));
-        User user1 = UserController.create(user1_1);
+        User user1 = userController.create(user1_1);
         User user2_1 = new User(999, "email2@yandex.ru", "login2", "Name2", LocalDate.of(2015, 3, 15));
 
         String jsonRequest = om.writeValueAsString(user2_1);
@@ -192,6 +194,7 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
     @SneakyThrows
     @Test
     void putUserWrongEmail() {
@@ -200,7 +203,7 @@ class UserControllerTest {
         user1_1.setLogin("login1");
         user1_1.setName("Name1");
         user1_1.setBirthday(LocalDate.of(2015, 3, 15));
-        User user1 = UserController.create(user1_1);
+        User user1 = userController.create(user1_1);
         User user2_1 = new User(1, "email1 yandex.ru", "login2", "Name2", LocalDate.of(2015, 3, 15));
 
         String jsonRequest = om.writeValueAsString(user2_1);
@@ -211,6 +214,7 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
     @SneakyThrows
     @Test
     void putUserWrongLogin() {
@@ -219,7 +223,7 @@ class UserControllerTest {
         user1_1.setLogin("login1");
         user1_1.setName("Name1");
         user1_1.setBirthday(LocalDate.of(2015, 3, 15));
-        User user1 = UserController.create(user1_1);
+        User user1 = userController.create(user1_1);
         User user2_1 = new User(1, "email1@yandex.ru", "log in2", "Name2", LocalDate.of(2015, 3, 15));
 
         String jsonRequest = om.writeValueAsString(user2_1);
@@ -230,6 +234,7 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
     @SneakyThrows
     @Test
     void putUserWrongBirthday() {
@@ -238,7 +243,7 @@ class UserControllerTest {
         user1_1.setLogin("login1");
         user1_1.setName("Name1");
         user1_1.setBirthday(LocalDate.of(2015, 3, 15));
-        User user1 = UserController.create(user1_1);
+        User user1 = userController.create(user1_1);
         User user2_1 = new User(1, "email1@yandex.ru", "login2", "Name2", LocalDate.of(2025, 3, 15));
 
         String jsonRequest = om.writeValueAsString(user2_1);

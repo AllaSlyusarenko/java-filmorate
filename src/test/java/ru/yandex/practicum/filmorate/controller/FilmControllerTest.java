@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,13 +30,14 @@ class FilmControllerTest {
     @Autowired
     private MockMvc mvc;
     ObjectMapper om = new ObjectMapper();
+    FilmController filmController = new FilmController();
 
     @BeforeEach
     void setup() {
-        mvc = MockMvcBuilders.standaloneSetup(new FilmController()).build();
+        mvc = MockMvcBuilders.standaloneSetup(filmController).build();
         om.registerModule(new JavaTimeModule());
-        FilmController.films.clear();
-        FilmController.idFilm = 1;
+        filmController.setFilms(new HashMap<>());
+        filmController.setIdFilm(1);
     }
 
     @SneakyThrows
@@ -46,7 +48,7 @@ class FilmControllerTest {
         film1_1.setDescription("Description Film1");
         film1_1.setReleaseDate(LocalDate.of(2015, 3, 15));
         film1_1.setDuration(6315);
-        Film film1 = FilmController.create(film1_1);
+        Film film1 = filmController.create(film1_1);
         String jsonRequest = om.writeValueAsString(film1);
         mvc.perform(get("/films")
                         .contentType("application/json")
@@ -61,7 +63,7 @@ class FilmControllerTest {
         film2_1.setDescription("Description Film2");
         film2_1.setReleaseDate(LocalDate.of(2015, 3, 15));
         film2_1.setDuration(6315);
-        Film film2 = FilmController.create(film2_1);
+        Film film2 = filmController.create(film2_1);
         String jsonRequest2 = om.writeValueAsString(film2);
         mvc.perform(get("/films")
                         .contentType("application/json")
@@ -181,7 +183,7 @@ class FilmControllerTest {
         film1_1.setDescription("Description Film1");
         film1_1.setReleaseDate(LocalDate.of(2015, 3, 15));
         film1_1.setDuration(6315);
-        Film film1 = FilmController.create(film1_1);
+        Film film1 = filmController.create(film1_1);
         Film film2_1 = new Film(1, "Film 2", "Description Film1", LocalDate.of(2015, 3, 15), 6315);
 
         String jsonRequest = om.writeValueAsString(film2_1);
@@ -203,7 +205,7 @@ class FilmControllerTest {
         film1_1.setDescription("Description Film1");
         film1_1.setReleaseDate(LocalDate.of(2015, 3, 15));
         film1_1.setDuration(6315);
-        Film film1 = FilmController.create(film1_1);
+        Film film1 = filmController.create(film1_1);
         Film film2_1 = new Film(999, "Film 2", "Description Film1", LocalDate.of(2015, 3, 15), 6315);
 
         String jsonRequest = om.writeValueAsString(film2_1);
@@ -223,7 +225,7 @@ class FilmControllerTest {
         film1_1.setDescription("Description Film1");
         film1_1.setReleaseDate(LocalDate.of(2015, 3, 15));
         film1_1.setDuration(6315);
-        Film film1 = FilmController.create(film1_1);
+        Film film1 = filmController.create(film1_1);
         Film film2_1 = new Film(1, "", "Description Film1", LocalDate.of(2015, 3, 15), 6315);
 
         String jsonRequest = om.writeValueAsString(film2_1);
@@ -243,7 +245,7 @@ class FilmControllerTest {
         film1_1.setDescription("Description Film1");
         film1_1.setReleaseDate(LocalDate.of(2015, 3, 15));
         film1_1.setDuration(6315);
-        Film film1 = FilmController.create(film1_1);
+        Film film1 = filmController.create(film1_1);
         Film film2_1 = new Film(1, "Film 2", "Description Film1 qwrtywretryterytqwe weyqtrwetyqrwetyr ywtreytqrweytqrweytrqw yrwerweytr" +
                 "wrqeqrwetyqrwe gwehjwgehjg qjwhgejhqwgejhqgw wjejhdtgwetqwyet gweqwgteyqwt wetqywetqyuwte wqtwueytqywuet" +
                 "gehqjwgehjgw gwejhgehjqwgej wjegqjhwegjqhwge qgejqgwejhqgwejhg wjhgejhqgwejhqgw very long description", LocalDate.of(2015, 3, 15), 6315);
@@ -265,7 +267,7 @@ class FilmControllerTest {
         film1_1.setDescription("Description Film1");
         film1_1.setReleaseDate(LocalDate.of(2015, 3, 15));
         film1_1.setDuration(6315);
-        Film film1 = FilmController.create(film1_1);
+        Film film1 = filmController.create(film1_1);
         Film film2_1 = new Film(1, "Film 2", "Description Film1", LocalDate.of(1894, 3, 15), 6315);
 
         String jsonRequest = om.writeValueAsString(film2_1);
@@ -285,7 +287,7 @@ class FilmControllerTest {
         film1_1.setDescription("Description Film1");
         film1_1.setReleaseDate(LocalDate.of(2015, 3, 15));
         film1_1.setDuration(6315);
-        Film film1 = FilmController.create(film1_1);
+        Film film1 = filmController.create(film1_1);
         Film film2_1 = new Film(1, "Film 2", "Description Film1", LocalDate.of(2015, 3, 15), -1);
         String jsonRequest = om.writeValueAsString(film2_1);
 
