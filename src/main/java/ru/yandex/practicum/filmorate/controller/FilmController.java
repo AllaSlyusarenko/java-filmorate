@@ -22,14 +22,6 @@ public class FilmController {
     private static final LocalDate DATE_OF_FIRST_FILM = LocalDate.of(1895, 12, 28);
     public static final int LENGTH_OF_DESCRIPTION = 200;
 
-    public void setIdFilm(int idFilm) {
-        this.idFilm = idFilm;
-    }
-
-    public void setFilms(HashMap<Integer, Film> hashMap) {
-        this.films = hashMap;
-    }
-
     protected int generateIdFilm() {
         return idFilm++;
     }

@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -28,14 +27,13 @@ class UserControllerTest {
     @Autowired
     private MockMvc mvc;
     ObjectMapper om = new ObjectMapper();
-    UserController userController = new UserController();
+    UserController userController;
 
     @BeforeEach
     void setup() {
+        userController = new UserController();
         mvc = MockMvcBuilders.standaloneSetup(userController).build();
         om.registerModule(new JavaTimeModule());
-        userController.setUsers(new HashMap<>());
-        userController.setIdUser(1);
     }
 
     @SneakyThrows

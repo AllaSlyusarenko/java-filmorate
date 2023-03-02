@@ -14,20 +14,12 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private Map<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
     private final static Logger log = LoggerFactory.getLogger(UserController.class);
     private int idUser = 1;
 
     protected int generateIdUser() {
         return idUser++;
-    }
-
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
-    }
-
-    public void setUsers(HashMap<Integer, User> hashMap) {
-        this.users = hashMap;
     }
 
     @GetMapping
@@ -40,7 +32,7 @@ public class UserController {
     @PostMapping
     public User create(@RequestBody User user) {
         if (validationUser(user)) {
-            if (user.getName() == null || user.getName().isBlank() || user.getName().isEmpty()) {
+            if (user.getName() == null || user.getName().isBlank()) {
                 user.setName(user.getLogin());
             }
             user.setId(generateIdUser());
@@ -55,7 +47,7 @@ public class UserController {
     public User put(@RequestBody User user) {
         if (users.containsKey(user.getId())) {
             if (validationUser(user)) {
-                if (user.getName() == null || user.getName().isBlank() || user.getName().isEmpty()) {
+                if (user.getName() == null || user.getName().isBlank()) {
                     user.setName(user.getLogin());
                 }
                 users.put(user.getId(), user);

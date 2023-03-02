@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,14 +29,13 @@ class FilmControllerTest {
     @Autowired
     private MockMvc mvc;
     ObjectMapper om = new ObjectMapper();
-    FilmController filmController = new FilmController();
+    FilmController filmController;
 
     @BeforeEach
     void setup() {
+        filmController = new FilmController();
         mvc = MockMvcBuilders.standaloneSetup(filmController).build();
         om.registerModule(new JavaTimeModule());
-        filmController.setFilms(new HashMap<>());
-        filmController.setIdFilm(1);
     }
 
     @SneakyThrows
