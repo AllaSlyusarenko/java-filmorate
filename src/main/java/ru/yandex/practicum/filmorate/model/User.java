@@ -8,13 +8,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
     @NotNull
-    private int id;
+    private int idUser;
     @Email
     private String email;
     @NotBlank
@@ -22,5 +23,6 @@ public class User {
     private String name;
     @NotNull
     private LocalDate birthday;
+    private Set<Long> idFriends;
 }
 

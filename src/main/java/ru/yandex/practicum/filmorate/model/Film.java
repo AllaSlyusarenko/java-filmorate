@@ -10,13 +10,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
     @NotNull
-    private int id;
+    private int idFilm;
     @NotBlank
     private String name;
     @Size(min = 1, max = FilmController.LENGTH_OF_DESCRIPTION)
@@ -25,4 +26,5 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private long duration;
+    private Set<Long> idLikeUsers;
 }

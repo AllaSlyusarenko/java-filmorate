@@ -35,8 +35,8 @@ public class UserController {
             if (user.getName() == null || user.getName().isBlank()) {
                 user.setName(user.getLogin());
             }
-            user.setId(generateIdUser());
-            users.put(user.getId(), user);
+            user.setIdUser(generateIdUser());
+            users.put(user.getIdUser(), user);
             log.info("Добавлен пользователь: {}", user);
             return user;
         }
@@ -45,12 +45,12 @@ public class UserController {
 
     @PutMapping
     public User put(@RequestBody User user) {
-        if (users.containsKey(user.getId())) {
+        if (users.containsKey(user.getIdUser())) {
             if (validationUser(user)) {
                 if (user.getName() == null || user.getName().isBlank()) {
                     user.setName(user.getLogin());
                 }
-                users.put(user.getId(), user);
+                users.put(user.getIdUser(), user);
                 log.info("Изменен пользователь: {}", user);
                 return user;
             }

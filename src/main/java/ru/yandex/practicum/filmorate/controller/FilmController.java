@@ -36,8 +36,8 @@ public class FilmController {
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         if (validationFilm(film)) {
-            film.setId(generateIdFilm());
-            films.put(film.getId(), film);
+            film.setIdFilm(generateIdFilm());
+            films.put(film.getIdFilm(), film);
             log.info("Добавлен фильм: {}", film);
             return film;
         }
@@ -46,9 +46,9 @@ public class FilmController {
 
     @PutMapping
     public Film put(@Valid @RequestBody Film film) {
-        if (films.containsKey(film.getId())) {
+        if (films.containsKey(film.getIdFilm())) {
             if (validationFilm(film)) {
-                films.put(film.getId(), film);
+                films.put(film.getIdFilm(), film);
                 log.info("Изменен фильм: {}", film);
                 return film;
             }
