@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -15,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class User {
     @NotNull
-    private int idUser;
+    private int id;
     @Email
     private String email;
     @NotBlank
@@ -23,6 +24,6 @@ public class User {
     private String name;
     @NotNull
     private LocalDate birthday;
-    private Set<Long> idFriends;
+    private Set<Integer> idFriends = new HashSet<>();
 }
 
