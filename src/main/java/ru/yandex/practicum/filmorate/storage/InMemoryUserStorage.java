@@ -20,8 +20,7 @@ public class InMemoryUserStorage implements UserStorage {
         return idUser++;
     }
 
-    @Override
-    public Map<Integer, User> getUsers() {
+    private Map<Integer, User> getUsers() {
         return users;
     }
 
@@ -34,102 +33,103 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User findUserById(int id) {
-        if (users.get(id) != null) {
-            log.info("Пользователь с id: {}", id);
-            return users.get(id);
-        } else {
+        if (users.get(id) == null) {
             log.warn("невозможно найти несуществующего пользователя");
             throw new NotFoundException("Нет пользователя с данными Id");
         }
+        log.info("Пользователь с id: {}", id);
+        return users.get(id);
     }
 
     @Override
     public User create(User user) {
-        if (validationUser(user)) {
-            if (user.getName() == null || user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-            user.setId(generateIdUser());
-            users.put(user.getId(), user);
-            log.info("Добавлен пользователь: {}", user);
-            return user;
+        if (!validationUser(user)) {
+            log.warn("данные пользователя не прошли валидацию");
+            throw new ValidationException("Ошибка валидации");
         }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+        user.setId(generateIdUser());
+        users.put(user.getId(), user);
+        log.info("Добавлен пользователь: {}", user);
         return user;
     }
 
     @Override
     public User put(User user) {
-        if (users.containsKey(user.getId())) {
-            if (validationUser(user)) {
-                if (user.getName() == null || user.getName().isBlank()) {
-                    user.setName(user.getLogin());
-                }
-                users.put(user.getId(), user);
-                log.info("Изменен пользователь: {}", user);
-                return user;
-            }
-        } else {
+        if (!users.containsKey(user.getId())) {
             log.warn("невозможно обновить несуществующего пользователя");
             throw new NotFoundException("Ошибка обновления - невозможно обновить несуществующего пользователя");
+        }
+        if (validationUser(user)) {
+            if (user.getName() == null || user.getName().isBlank()) {
+                user.setName(user.getLogin());
+            }
+            users.put(user.getId(), user);
+            log.info("Изменен пользователь: {}", user);
         }
         return user;
     }
 
     @Override
     public User addToFriends(int id, int friendId) {
-        if (findUserById(id) != null && findUserById(friendId) != null) {
-            findUserById(id).getIdFriends().add(friendId);
-            getUsers().get(friendId).getIdFriends().add(id);
-            log.info("Пользователи: {},{} стали друзьями", findUserById(id), findUserById(friendId));
-            return getUsers().get(friendId);
-        } else {
+        User user = findUserById(id);
+        User friend = findUserById(friendId);
+        if (user == null || friend == null) {
             log.warn("невозможно найти несуществующего пользователя");
             throw new NotFoundException("Нет пользователей с данными Id");
         }
+        user.getIdFriends().add(friendId);
+        friend.getIdFriends().add(id);
+        log.info("Пользователи: {},{} стали друзьями", user, friend);
+        return getUsers().get(friendId);
     }
+
     @Override
     public User deleteFromFriends(int id, int friendId) {
-        if (findUserById(id) != null && findUserById(friendId) != null && findUserById(id).getIdFriends().contains(friendId)) {
-            findUserById(id).getIdFriends().remove(friendId);
-            findUserById(friendId).getIdFriends().remove(id);
-            log.info("Пользователи: {},{} больше не друзья", findUserById(id), findUserById(friendId));
-            return getUsers().get(friendId);
-        } else {
+        User user = findUserById(id);
+        User friend = findUserById(friendId);
+        if (user == null || friend == null || !user.getIdFriends().contains(friendId)) {
             log.warn("невозможно найти несуществующего пользователя");
             throw new NotFoundException("Нет пользователей с данными Id");
         }
+        user.getIdFriends().remove(friendId);
+        friend.getIdFriends().remove(id);
+        log.info("Пользователи: {},{} больше не друзья", user, friend);
+        return getUsers().get(friendId);
     }
 
     @Override
     public List<User> getFriends(int id) {
         List<User> listFriends = new ArrayList<>();
-        if (findUserById(id) != null) {
-            for (int idFriends : findUserById(id).getIdFriends()) {
-                listFriends.add(findUserById(idFriends));
-            }
-            log.info("Количество друзей пользователя: {}", listFriends.size());
-            return listFriends;
-        } else {
+        if (findUserById(id) == null) {
             log.warn("невозможно найти несуществующего пользователя");
             throw new NotFoundException("Нет пользователя с данным Id");
         }
+        for (int idFriends : findUserById(id).getIdFriends()) {
+            listFriends.add(findUserById(idFriends));
+        }
+        log.info("Количество друзей пользователя: {}", listFriends.size());
+        return listFriends;
     }
 
     @Override
     public List<User> getCommonFriends(int id, int otherId) {
+        User user = findUserById(id);
+        User other = findUserById(otherId);
         List<User> listFriends = new ArrayList<>();
-        if (findUserById(id) != null && findUserById(otherId) != null) {
-            for (int idFriend : findUserById(id).getIdFriends()) {
-                if (findUserById(otherId).getIdFriends().contains(idFriend)) {
-                    listFriends.add(findUserById(idFriend));
-                }
-            }
-            log.info("Количество общих друзей: {}", listFriends.size());
-            return listFriends;
-        } else {
+        if (user == null || other == null) {
             log.warn("невозможно найти несуществующего пользователя");
             throw new NotFoundException("Нет пользователей с данными Id");
         }
+        for (int idFriend : user.getIdFriends()) {
+            if (other.getIdFriends().contains(idFriend)) {
+                listFriends.add(findUserById(idFriend));
+            }
+        }
+        log.info("Количество общих друзей: {}", listFriends.size());
+        return listFriends;
     }
 
     private boolean validationUser(User user) {
