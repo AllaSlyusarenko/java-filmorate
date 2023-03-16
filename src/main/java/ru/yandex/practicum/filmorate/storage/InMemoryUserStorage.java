@@ -76,10 +76,6 @@ public class InMemoryUserStorage implements UserStorage {
     public User addToFriends(int id, int friendId) {
         User user = findUserById(id);
         User friend = findUserById(friendId);
-        if (user == null || friend == null) {
-            log.warn("невозможно найти несуществующего пользователя");
-            throw new NotFoundException("Нет пользователей с данными Id");
-        }
         user.getIdFriends().add(friendId);
         friend.getIdFriends().add(id);
         log.info("Пользователи: {},{} стали друзьями", user, friend);
@@ -90,24 +86,21 @@ public class InMemoryUserStorage implements UserStorage {
     public User deleteFromFriends(int id, int friendId) {
         User user = findUserById(id);
         User friend = findUserById(friendId);
-        if (user == null || friend == null || !user.getIdFriends().contains(friendId)) {
-            log.warn("невозможно найти несуществующего пользователя");
-            throw new NotFoundException("Нет пользователей с данными Id");
+        if (!user.getIdFriends().contains(friendId)) {
+            log.warn("пользователи не являются друзьями друг друга");
+            throw new NotFoundException("пользователи не являются друзьями друг друга");
         }
         user.getIdFriends().remove(friendId);
         friend.getIdFriends().remove(id);
         log.info("Пользователи: {},{} больше не друзья", user, friend);
-        return getUsers().get(friendId);
+        return users.get(friendId);
     }
 
     @Override
     public List<User> getFriends(int id) {
         List<User> listFriends = new ArrayList<>();
-        if (findUserById(id) == null) {
-            log.warn("невозможно найти несуществующего пользователя");
-            throw new NotFoundException("Нет пользователя с данным Id");
-        }
-        for (int idFriends : findUserById(id).getIdFriends()) {
+        User user = findUserById(id);
+        for (int idFriends : user.getIdFriends()) {
             listFriends.add(findUserById(idFriends));
         }
         log.info("Количество друзей пользователя: {}", listFriends.size());
@@ -119,10 +112,6 @@ public class InMemoryUserStorage implements UserStorage {
         User user = findUserById(id);
         User other = findUserById(otherId);
         List<User> listFriends = new ArrayList<>();
-        if (user == null || other == null) {
-            log.warn("невозможно найти несуществующего пользователя");
-            throw new NotFoundException("Нет пользователей с данными Id");
-        }
         for (int idFriend : user.getIdFriends()) {
             if (other.getIdFriends().contains(idFriend)) {
                 listFriends.add(findUserById(idFriend));

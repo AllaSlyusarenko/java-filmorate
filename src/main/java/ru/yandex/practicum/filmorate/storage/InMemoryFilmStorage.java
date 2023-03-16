@@ -2,10 +2,12 @@ package ru.yandex.practicum.filmorate.storage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -14,11 +16,16 @@ import java.util.stream.Collectors;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private final Logger log = LoggerFactory.getLogger(InMemoryFilmStorage.class);
-    private final UserStorage inMemoryUserStorage = new InMemoryUserStorage();
+    private final UserStorage inMemoryUserStorage;
     private Map<Integer, Film> films = new HashMap<>();
     private int idFilm = 1;
     private static final LocalDate DATE_OF_FIRST_FILM = LocalDate.of(1895, 12, 28);
     public static final int LENGTH_OF_DESCRIPTION = 200;
+
+    @Autowired
+    public InMemoryFilmStorage(UserStorage inMemoryUserStorage) {
+        this.inMemoryUserStorage = inMemoryUserStorage;
+    }
 
     protected int generateIdFilm() {
         return idFilm++;
@@ -67,25 +74,29 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film putLike(int id, int userId) {
-        if (!films.containsKey(id) || findFilmById(id).getIdLikeUsers().contains(userId) || inMemoryUserStorage.findAll().contains(userId)) {
-            log.warn("невозможно найти несуществующий фильм");
-            throw new NotFoundException(String.format("Нет фильма с данным id %d", id));
+    public Film putLike(int idFilm, int userId) {
+        Film film = findFilmById(idFilm);
+        User user = inMemoryUserStorage.findUserById(userId);
+        if (film.getIdLikeUsers().contains(userId)) {
+            log.warn("этот пользователь уже поставил лайк данному фильму");
+            throw new NotFoundException(String.format("этот пользователь уже поставил лайк фильму с id %d", idFilm));
         }
-        findFilmById(id).getIdLikeUsers().add(userId);
-        log.info("Фильм {} получил Like  от пользователя с id {}", findFilmById(id), userId);
-        return findFilmById(id);
+        film.getIdLikeUsers().add(userId);
+        log.info("Фильм {} получил Like  от пользователя с id {}", film, userId);
+        return film;
     }
 
     @Override
     public Film deleteLike(int idFilm, int userId) {
-        if (!films.containsKey(idFilm) || !findFilmById(idFilm).getIdLikeUsers().contains(userId) || inMemoryUserStorage.findAll().contains(userId)) {
-            log.warn("невозможно найти несуществующий фильм");
-            throw new NotFoundException(String.format("Нет фильма с данным id %d", idFilm));
+        Film film = findFilmById(idFilm);
+        User user = inMemoryUserStorage.findUserById(userId);
+        if (!film.getIdLikeUsers().contains(userId)) {
+            log.warn("этот пользователь еще не поставил лайк данному фильму");
+            throw new NotFoundException(String.format("этот пользователь еще не поставил лайк фильму с id %d", idFilm));
         }
-        findFilmById(idFilm).getIdLikeUsers().remove(userId);
-        log.info("Пользователь с id {} удалил Like  у фильма {}", userId, findFilmById(idFilm));
-        return findFilmById(idFilm);
+        film.getIdLikeUsers().remove(userId);
+        log.info("Пользователь с id {} удалил Like  у фильма {}", userId, film);
+        return film;
     }
 
     @Override
