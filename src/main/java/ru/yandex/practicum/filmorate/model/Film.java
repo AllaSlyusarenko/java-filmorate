@@ -28,7 +28,8 @@ public class Film {
     @Positive
     private long duration;
     private Set<Integer> idLikeUsers = new HashSet<>();
-    public static int getSizeIdLikesUsers(Film film){
+
+    public static int getSizeIdLikesUsers(Film film) {
         return film.getIdLikeUsers().size();
     }
 }
