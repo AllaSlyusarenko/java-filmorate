@@ -25,5 +25,7 @@ public class User {
     @NotNull
     private LocalDate birthday;
     private Set<Integer> idFriends = new HashSet<>();
+//    private Set<Integer> offerFromUser = new HashSet<>();
+//    private Set<Integer> offerToUser = new HashSet<>();
 }
 
