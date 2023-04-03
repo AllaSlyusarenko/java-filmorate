@@ -29,6 +29,21 @@
 ##### http://localhost:8080/users/1/friends/2
 
 ## Примеры SQL запросов
-##### SELECT  u.id_user, u.name_user, u.login FROM user as u INNER JOIN friendship as fr ON fr.id_friend = u.id_user WHERE fr.id_user=1
+``` 
+SELECT  u.id_user,
+        u.name_user, 
+        u.login
+FROM user as u
+INNER JOIN friendship as fr ON fr.id_friend = u.id_user
+WHERE u.id_user=1
+```
+
+```
+SELECT id_film,
+       count(*)
+FROM LikeUsers as lu
+WHERE f.id_film=1
+GROUP BY id_film;
+```
 
 #### проект создан: AllaSlyusarenko
