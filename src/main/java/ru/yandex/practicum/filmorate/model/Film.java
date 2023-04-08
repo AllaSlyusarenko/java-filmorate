@@ -27,6 +27,9 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private int duration;
+    private MPA mpa;
+    private Set<Genre> genres;
+
     private Set<Integer> idLikeUsers = new HashSet<>();
 
     public static int getSizeIdLikesUsers(Film film) {

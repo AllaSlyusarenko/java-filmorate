@@ -1,3 +1,5 @@
+--удалить таблицы, так как зависимости, удалять с концов грозди, в конце главные таблицы
+--drop table;
 create table IF NOT EXISTS films(
 id_film serial not null primary key,
 name_film varchar(255) not null,
