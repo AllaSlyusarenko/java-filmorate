@@ -26,7 +26,7 @@ public class Film {
     @NotNull
     private LocalDate releaseDate;
     @Positive
-    private long duration;
+    private int duration;
     private Set<Integer> idLikeUsers = new HashSet<>();
 
     public static int getSizeIdLikesUsers(Film film) {
