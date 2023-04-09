@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
-
+@Component
+@Primary
 public class FilmDbStorage implements FilmStorage{
     @Override
     public List<Film> findAll() {
@@ -16,14 +19,15 @@ public class FilmDbStorage implements FilmStorage{
     }
 
     @Override
-    public Film create(Film film) {
+    public Film create(Film film) { //add
         return null;
     }
 
     @Override
-    public Film put(Film film) {
+    public Film put(Film film) { //update
         return null;
     }
+    //удалить фильм
 
     @Override
     public Film putLike(int id, int userId) {
@@ -39,4 +43,8 @@ public class FilmDbStorage implements FilmStorage{
     public List<Film> getTopFilms(int count) {
         return null;
     }
+    // получить лайки фильма по id фильма
+    //получить все жанры фильма
+    //make film
+    //какая-то валидация
 }

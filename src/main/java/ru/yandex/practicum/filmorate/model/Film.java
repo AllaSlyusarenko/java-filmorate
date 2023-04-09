@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Film {
     @NotNull
     private int id;
@@ -30,9 +32,9 @@ public class Film {
     private MPA mpa;
     private Set<Genre> genres;
 
-    private Set<Integer> idLikeUsers = new HashSet<>();
-
-    public static int getSizeIdLikesUsers(Film film) {
-        return film.getIdLikeUsers().size();
-    }
+//    private Set<Integer> idLikeUsers = new HashSet<>();
+//
+//    public static int getSizeIdLikesUsers(Film film) {
+//        return film.getIdLikeUsers().size();
+//    }
 }
