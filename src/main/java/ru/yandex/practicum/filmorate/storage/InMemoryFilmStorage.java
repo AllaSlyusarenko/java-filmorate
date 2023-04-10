@@ -77,11 +77,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film putLike(int idFilm, int userId) {
         Film film = findFilmById(idFilm);
         User user = inMemoryUserStorage.findUserById(userId);
-        if (film.getIdLikeUsers().contains(userId)) {
-            log.warn("этот пользователь уже поставил лайк данному фильму");
-            throw new NotFoundException(String.format("этот пользователь уже поставил лайк фильму с id %d", idFilm));
-        }
-        film.getIdLikeUsers().add(userId);
+//        if (film.getIdLikeUsers().contains(userId)) {
+//            log.warn("этот пользователь уже поставил лайк данному фильму");
+//            throw new NotFoundException(String.format("этот пользователь уже поставил лайк фильму с id %d", idFilm));
+//        }
+//        film.getIdLikeUsers().add(userId);
         log.info("Фильм {} получил Like  от пользователя с id {}", film, userId);
         return film;
     }
@@ -90,11 +90,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film deleteLike(int idFilm, int userId) {
         Film film = findFilmById(idFilm);
         User user = inMemoryUserStorage.findUserById(userId);
-        if (!film.getIdLikeUsers().contains(userId)) {
-            log.warn("этот пользователь еще не поставил лайк данному фильму");
-            throw new NotFoundException(String.format("этот пользователь еще не поставил лайк фильму с id %d", idFilm));
-        }
-        film.getIdLikeUsers().remove(userId);
+//        if (!film.getIdLikeUsers().contains(userId)) {
+//            log.warn("этот пользователь еще не поставил лайк данному фильму");
+//            throw new NotFoundException(String.format("этот пользователь еще не поставил лайк фильму с id %d", idFilm));
+//        }
+//        film.getIdLikeUsers().remove(userId);
         log.info("Пользователь с id {} удалил Like  у фильма {}", userId, film);
         return film;
     }
@@ -102,7 +102,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> getTopFilms(int count) {
         return films.values().stream()
-                .sorted(Comparator.comparing(Film::getSizeIdLikesUsers).reversed())
+ //               .sorted(Comparator.comparing(Film::getSizeIdLikesUsers).reversed())
                 .limit(count)
                 .collect(Collectors.toList());
     }

@@ -6,6 +6,7 @@ drop table if exists friendship;
 drop table if exists films;
 drop table if exists users;
 
+
 create table IF NOT EXISTS genres(
 id_genre serial not null primary key,
 name_genre varchar(255) not NULL

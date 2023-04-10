@@ -11,13 +11,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Film {
     @NotNull
     private int id;
@@ -29,7 +28,8 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private int duration;
-    private MPA mpa;
+    @NotNull
+    private int mpa;
     private Set<Genre> genres;
 
 //    private Set<Integer> idLikeUsers = new HashSet<>();
