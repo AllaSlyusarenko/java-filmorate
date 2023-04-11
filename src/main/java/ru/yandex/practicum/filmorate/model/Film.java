@@ -29,10 +29,17 @@ public class Film {
     @Positive
     private int duration;
     @NotNull
-    private int mpa;
+    private MPA mpa;
     private Set<Genre> genres;
 
-//    private Set<Integer> idLikeUsers = new HashSet<>();
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+    }
+    //    private Set<Integer> idLikeUsers = new HashSet<>();
 //
 //    public static int getSizeIdLikesUsers(Film film) {
 //        return film.getIdLikeUsers().size();
