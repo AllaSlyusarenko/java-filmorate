@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPA;
@@ -19,8 +20,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.stream.Collectors;
 
 @Component
 @Primary
@@ -34,32 +33,21 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> findAll() { //  find all films
-        String sqlQuery = "SELECT * FROM films f JOIN FILMGENRE fg ON f.ID_FILM = fg.ID_FILM JOIN GENRES g ON fg.id_genre=g.ID_GENRE";
+        String sqlQuery = "select f.id_film, f.name_film, f.description," +
+                " f.release_date, f.duration, f.id_mpa, mpa.name_mpa, fg.id_genre, g.name_genre  from films f " +
+                "LEFT JOIN MPA mpa ON f.ID_mpa = mpa.ID_MPA LEFT JOIN filmgenre fg ON f.ID_FILM = fg.ID_FILM  " +
+                "LEFT JOIN genres g ON fg.id_genre = g.id_genre";
         List<Film> filmList = jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
-
-        //stream() - .toMap (id, Film), reduce - при одинак id - правило объединения
-//        persons.stream()
-//                .collect(Collectors
-//                        .toMap(Person::getNationality, Person::getName, (name1, name2) -> name1);
-        BinaryOperator<Film> mergeFunction = (film1, film2) -> {
-            Set<Genre> genreHashSet = new HashSet<>(film1.getGenres());
-            genreHashSet.addAll(film2.getGenres());
-            return film1.toBuilder()
-                    .genres(genreHashSet)
-                    .build();
-        };
-
-        Map<Integer, Film> filmMap = filmList.stream()
-                .collect(Collectors.toMap(Film::getId, film -> film, mergeFunction));
-        List<Film> films = new ArrayList<>(filmMap.values());
-        return films;
+        return filmList;
     }
 
     @Override
     public Film findFilmById(int id) {
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet("select f.id_film, f.name_film, f.description," +
-                " f.release_date, f.duration, f.id_mpa, mpa.name_mpa  from films f" +
-                " LEFT JOIN MPA mpa ON f.ID_mpa = mpa.ID_MPA where id_film = ?", id);
+                " f.release_date, f.duration, f.id_mpa, mpa.name_mpa, fg.id_genre, g.name_genre  from films f" +
+                " LEFT JOIN MPA mpa ON f.ID_mpa = mpa.ID_MPA LEFT JOIN FILMGENRE fg ON f.ID_FILM = fg.ID_FILM  " +
+                "LEFT JOIN genres g ON fg.id_genre = g.id_genre where f.id_film = ?", id);
+
         if (filmRows.next()) {
             Film film = new Film();
             film.setId(filmRows.getInt("id_film"));
@@ -68,6 +56,7 @@ public class FilmDbStorage implements FilmStorage {
             film.setReleaseDate(filmRows.getDate("release_date").toLocalDate());
             film.setDuration(filmRows.getInt("duration"));
             film.setMpa(new MPA(filmRows.getInt("id_mpa"), filmRows.getString("name_mpa")));
+            film.setGenres(getAllGenresByIdFilm(id));
             log.info("Найден фильм: {} {}", film.getId(), film.getName());
             return film;
         } else {
@@ -76,22 +65,48 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    private Set<Genre> getAllGenresByIdFilm(int id) {
+        String genreQuery = "SELECT fg.ID_FILM , g.id_genre, g.name_genre From FILMGENRE fg" +
+                " JOIN GENRES g ON fg.id_genre=g.ID_GENRE WHERE fg.ID_FILM = ?";
+        List<Genre> genreList = jdbcTemplate.query(genreQuery, this::mapRowToGenre, id);
+        Set<Genre> genres = new HashSet<>();
+        for (Genre genre : genreList) {
+            genres.add(genre);
+        }
+        return genres;
+    }
+
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
-        Film film = Film.builder()
+        MPA mpa = mapRowToMPA(resultSet, rowNum);
+                Film film = Film.builder()
                 .id(resultSet.getInt("id_film"))
                 .name(resultSet.getString("name_film"))
                 .description(resultSet.getString("description"))
                 .releaseDate(resultSet.getDate("release_date").toLocalDate())
                 .duration(resultSet.getInt("duration"))
-                .mpa(new MPA(resultSet.getInt("id_mpa"), resultSet.getString("name_mpa")))
-                .genres(Set.of(new Genre(resultSet.getInt("id_genre"), resultSet.getString("name_genre"))))
+                .mpa(mpa)
+                .genres(getAllGenresByIdFilm(resultSet.getInt("id_film")))
                 .build();
         return film;
     }
 
+    private MPA mapRowToMPA(ResultSet resultSet, int rowNum) throws SQLException {
+        MPA mpa = new MPA();
+        mpa.setId(resultSet.getInt("id_mpa"));
+        mpa.setNameMPA(resultSet.getString("name_mpa"));
+        return mpa;
+    }
+
+    private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
+        Genre genre = new Genre();
+        genre.setId(resultSet.getInt("id_genre"));
+        genre.setNameGenre(resultSet.getString("name_genre"));
+        return genre;
+    }
+
     @Override
     public Film create(Film film) { //add
-        String insertQuery = "INSERT INTO public.films (name_film, description, release_date, duration, id_mpa) VALUES (?, ?, ?, ?,?)";
+        String insertQuery = "INSERT INTO films (name_film, description, release_date, duration, id_mpa) VALUES (?, ?, ?, ?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(insertQuery, new String[]{"id_film"});
@@ -104,24 +119,41 @@ public class FilmDbStorage implements FilmStorage {
         }, keyHolder);
 
         film.setId(keyHolder.getKey().intValue());
-        if (film.getGenres() != null) {
-            film.setGenres(film.getGenres());
-        } else {
-            film.setGenres(Collections.emptySet());
-        }
-
-        film.setMpa(getMPA(film.getMpa().getId()));
+        film.setMpa(collectMPA(film.getMpa().getId()));
 
         String genresQuery = "INSERT INTO FILMGENRE(id_film, id_genre) VALUES (?, ?) ";
         if (film.getGenres() != null) {
-            for( Genre genre: film.getGenres()){
+            for (Genre genre : film.getGenres()) {
                 jdbcTemplate.update(genresQuery, film.getId(), genre.getId());
             }
+        } else {
+            film.setGenres(Collections.emptySet());
         }
-        return findFilmById(keyHolder.getKey().intValue());
+        collectAllGenresIntoFilm(film);
+        return film;
     }
 
-    private MPA getMPA(int id_mpa) {
+    private Set<Genre> collectAllGenresIntoFilm(Film film) {
+        Set fullGenres = new HashSet<>();
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                fullGenres.add(collectGenre(genre.getId()));
+            }
+            film.setGenres(fullGenres);
+        } else {
+            film.setGenres(Collections.emptySet());
+        }
+        return fullGenres;
+    }
+
+    private MPA makeMPA(ResultSet rs, int rowNum) throws SQLException {
+        return new MPA(rs.getInt("id_mpa"), rs.getString("name_mpa"));
+    }
+    private Genre makeGenre(ResultSet rs, int rowNum) throws SQLException {
+        return new Genre(rs.getInt("id_genre"), rs.getString("name_genre"));
+    }
+
+    private MPA collectMPA(int id_mpa) {
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("Select name_mpa from mpa where id_mpa = ?", id_mpa);
         if (mpaRows.next()) {
             MPA mpa = new MPA();
@@ -133,9 +165,40 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
+    private Genre collectGenre(int id_genre) {
+        SqlRowSet genreRows = jdbcTemplate.queryForRowSet("Select name_genre from genres where id_genre = ?", id_genre);
+        if (genreRows.next()) {
+            Genre genre = new Genre();
+            genre.setId(id_genre);
+            genre.setNameGenre(genreRows.getString("name_genre"));
+            return genre;
+        } else {
+            throw new NotFoundException("Не найдено");
+        }
+    }
+
     @Override
     public Film put(Film film) { //update
-        return null;
+        if (findFilmById(film.getId())== null){
+            throw new ValidationException("Невозможно обновить несуществующий фильм");
+        }
+        String sqlQuery = "update films set name_film= ?, description  = ?, release_date = ?, duration = ?," +
+                " id_mpa = ? where id_film = ?";
+        jdbcTemplate.update(sqlQuery
+                , film.getName()
+                , film.getDescription()
+                , film.getReleaseDate()
+                , film.getDuration()
+                , film.getMpa().getId()
+                , film.getId()
+        );
+        film.setGenres(collectAllGenresIntoFilm(film));
+
+        //достать все жанры
+        //нули сделать с именами
+
+        //обновить и в других таблицах - удалить из соединит таблицы и вставить новое значение
+        return film;
     }
 
 

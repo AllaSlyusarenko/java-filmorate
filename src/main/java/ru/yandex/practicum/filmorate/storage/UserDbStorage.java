@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @Primary
@@ -85,6 +84,9 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User put(User user) {
+        if (findUserById(user.getId())== null){
+            throw new ValidationException("Невозможно обновить несуществующего пользователя");
+        }
         String sqlQuery = "update users set name_user = ?, login  = ?, birthday = ?, email = ? where id_user = ?";
         jdbcTemplate.update(sqlQuery
                 , user.getName()
