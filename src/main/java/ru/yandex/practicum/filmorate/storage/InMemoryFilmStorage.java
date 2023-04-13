@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -74,7 +76,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film putLike(int idFilm, int userId) {
+    public boolean putLike(int idFilm, int userId) {
         Film film = findFilmById(idFilm);
         User user = inMemoryUserStorage.findUserById(userId);
 //        if (film.getIdLikeUsers().contains(userId)) {
@@ -83,11 +85,11 @@ public class InMemoryFilmStorage implements FilmStorage {
 //        }
 //        film.getIdLikeUsers().add(userId);
         log.info("Фильм {} получил Like  от пользователя с id {}", film, userId);
-        return film;
+        return true;
     }
 
     @Override
-    public Film deleteLike(int idFilm, int userId) {
+    public boolean deleteLike(int idFilm, int userId) {
         Film film = findFilmById(idFilm);
         User user = inMemoryUserStorage.findUserById(userId);
 //        if (!film.getIdLikeUsers().contains(userId)) {
@@ -96,15 +98,35 @@ public class InMemoryFilmStorage implements FilmStorage {
 //        }
 //        film.getIdLikeUsers().remove(userId);
         log.info("Пользователь с id {} удалил Like  у фильма {}", userId, film);
-        return film;
+        return true;
     }
 
     @Override
     public List<Film> getTopFilms(int count) {
         return films.values().stream()
- //               .sorted(Comparator.comparing(Film::getSizeIdLikesUsers).reversed())
+                //               .sorted(Comparator.comparing(Film::getSizeIdLikesUsers).reversed())
                 .limit(count)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Genre findGenreById(int id) {
+        return null;
+    }
+
+    @Override
+    public List<Genre> findAllGenres() {
+        return null;
+    }
+
+    @Override
+    public MPA findMpaById(int id) {
+        return null;
+    }
+
+    @Override
+    public List<MPA> findAllMpa() {
+        return null;
     }
 
     private boolean validationFilm(Film film) {

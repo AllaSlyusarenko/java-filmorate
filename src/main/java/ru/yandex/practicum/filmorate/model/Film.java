@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -30,7 +31,7 @@ public class Film {
     private int duration;
     @NotNull
     private MPA mpa;
-    private Set<Genre> genres;
+    private List<Genre> genres;
 
     public Film(int id, String name, String description, LocalDate releaseDate, int duration) {
         this.id = id;

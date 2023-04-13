@@ -20,15 +20,15 @@ public class FilmService {
         return filmStorage;
     }
 
-    public Film deleteLike(int idFilm, int userId) {
+    public boolean deleteLike(int idFilm, int userId) {
         return filmStorage.deleteLike(idFilm, userId); //удалить у фильма лайк
     }
 
     public List<Film> getTopFilms(int count) {
-        return filmStorage.getTopFilms(count); // через стримы отсортировать по количеству лайков - сортид и компаратор, только по уменьшению лайков, лимит - 10
+        return filmStorage.getTopFilms(count);
     }
 
-    public Film putLike(int idFilm, int userId) {
+    public boolean putLike(int idFilm, int userId) {
         return filmStorage.putLike(idFilm, userId);
     }
 }

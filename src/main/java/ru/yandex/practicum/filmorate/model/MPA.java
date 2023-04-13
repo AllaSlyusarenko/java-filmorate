@@ -1,13 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 @Data
-@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class MPA {
     private int id;
-    private String nameMPA;
+    @Builder.Default
+    private String name = "";
 }
