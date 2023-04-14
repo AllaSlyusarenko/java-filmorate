@@ -236,9 +236,9 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Genre findGenreById(int id_genre) {
-        if (!jdbcTemplate.query("Select * from genres where id_genre = ?", genreRowMapper(), id_genre).isEmpty()) {
-            Genre genre = jdbcTemplate.queryForObject("Select * from genres where id_genre = ?", genreRowMapper(), id_genre);
+    public Genre findGenreById(int idGenre) {
+        if (!jdbcTemplate.query("Select * from genres where id_genre = ?", genreRowMapper(), idGenre).isEmpty()) {
+            Genre genre = jdbcTemplate.queryForObject("Select * from genres where id_genre = ?", genreRowMapper(), idGenre);
             return genre;
         } else {
             throw new NotFoundException("Неверный идентификатор");
@@ -259,9 +259,9 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public MPA findMpaById(int id_mpa) {
-        if (!jdbcTemplate.query("Select * from mpa where id_mpa = ?", mpaRowMapper(), id_mpa).isEmpty()) {
-            MPA mpa = jdbcTemplate.queryForObject("Select * from mpa where id_mpa = ?", mpaRowMapper(), id_mpa);
+    public MPA findMpaById(int idMpa) {
+        if (!jdbcTemplate.query("Select * from mpa where id_mpa = ?", mpaRowMapper(), idMpa).isEmpty()) {
+            MPA mpa = jdbcTemplate.queryForObject("Select * from mpa where id_mpa = ?", mpaRowMapper(), idMpa);
             return mpa;
         } else {
             throw new NotFoundException("Неверный идентификатор");
