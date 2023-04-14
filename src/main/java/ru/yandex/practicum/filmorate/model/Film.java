@@ -12,7 +12,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -40,9 +39,4 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
     }
-    //    private Set<Integer> idLikeUsers = new HashSet<>();
-//
-//    public static int getSizeIdLikesUsers(Film film) {
-//        return film.getIdLikeUsers().size();
-//    }
 }

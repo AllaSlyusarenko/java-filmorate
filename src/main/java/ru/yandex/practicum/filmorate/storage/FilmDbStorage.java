@@ -225,11 +225,13 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getTopFilms(int count) { // ОБЯЗАТЕЛЬНО проверить запрос
-
-        String getQueryTopFilms = "SELECT id_film AS max FROM (SELECT id_film, count(*) AS c FROM LIKEUSERS l" +
-                " GROUP BY ID_FILM) GROUP BY max ORDER BY max DESC LIMIT ?";
-        List<Film> topFilms = jdbcTemplate.query(getQueryTopFilms, this::mapRowToFilm, count);
+    public List<Film> getTopFilms(int count) {
+        String getQueryTopFilms1 = "SELECT f.*, flu.alllikes " +
+                " FROM (SELECT films.*, mpa.name_mpa FROM films JOIN mpa ON films.id_mpa = mpa.id_mpa) AS f " +
+                " LEFT JOIN" +
+                " (SELECT id_film, COUNT(id_user) as alllikes FROM likeusers GROUP BY id_film ORDER BY COUNT(id_user))AS flu " +
+                " ON f.id_film = flu.id_film ORDER BY flu.alllikes DESC LIMIT ?";
+        List<Film> topFilms = jdbcTemplate.query(getQueryTopFilms1, this::mapRowToFilm, count);
         return topFilms;
     }
 
@@ -270,8 +272,5 @@ public class FilmDbStorage implements FilmStorage {
     public List<MPA> findAllMpa() {
         return jdbcTemplate.query("select * from mpa", mpaRowMapper());
     }
-    // получить лайки фильма по id фильма
-    //получить все жанры фильма
-    //make film
     //какая-то валидация
 }

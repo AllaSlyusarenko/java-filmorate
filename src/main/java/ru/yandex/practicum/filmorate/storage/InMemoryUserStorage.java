@@ -73,17 +73,17 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User addToFriends(int id, int friendId) {
+    public boolean addToFriends(int id, int friendId) {
         User user = findUserById(id);
         User friend = findUserById(friendId);
 //        user.getIdFriends().add(friendId);
 //        friend.getIdFriends().add(id);
         log.info("Пользователи: {},{} стали друзьями", user, friend);
-        return getUsers().get(friendId);
+        return true;
     }
 
     @Override
-    public User deleteFromFriends(int id, int friendId) {
+    public boolean deleteFromFriends(int id, int friendId) {
         User user = findUserById(id);
         User friend = findUserById(friendId);
 //        if (!user.getIdFriends().contains(friendId)) {
@@ -93,7 +93,7 @@ public class InMemoryUserStorage implements UserStorage {
 //        user.getIdFriends().remove(friendId);
 //        friend.getIdFriends().remove(id);
         log.info("Пользователи: {},{} больше не друзья", user, friend);
-        return users.get(friendId);
+        return true;
     }
 
     @Override
