@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -54,13 +53,13 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     public boolean addToFriends(@PathVariable(value = "id") int id,
-                             @PathVariable(value = "friendId") int friendId){
+                                @PathVariable(value = "friendId") int friendId) {
         return userService.addToFriends(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public boolean deleteFromFriends(@PathVariable(value = "id") int id,
-                                  @PathVariable(value = "friendId") int friendId) {
+                                     @PathVariable(value = "friendId") int friendId) {
         return userService.deleteFromFriends(id, friendId);
     }
 
