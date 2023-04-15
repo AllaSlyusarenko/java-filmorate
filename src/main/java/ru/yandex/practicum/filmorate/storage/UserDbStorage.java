@@ -14,7 +14,6 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -178,21 +177,5 @@ public class UserDbStorage implements UserStorage {
 
         List<User> commonUsers = jdbcTemplate.query(getCommonFriendQuery, userRowMapper(), id, otherId);
         return commonUsers;
-    }
-
-    private boolean validationUser(User user) {
-        if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            log.warn("электронная почта не может быть пустой и должна содержать символ @");
-            throw new ValidationException("Ошибка валидации - электронная почта не может быть пустой и должна содержать символ @");
-        }
-        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.warn("логин не может быть пустым и содержать пробелы");
-            throw new ValidationException("Ошибка валидации - логин не может быть пустым и содержать пробелы");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.warn("дата рождения не может быть в будущем");
-            throw new ValidationException("Ошибка валидации - дата рождения не может быть в будущем");
-        }
-        return true;
     }
 }

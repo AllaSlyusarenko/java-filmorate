@@ -21,7 +21,7 @@ public class FilmService {
     }
 
     public boolean deleteLike(int idFilm, int userId) {
-        return filmStorage.deleteLike(idFilm, userId); //удалить у фильма лайк
+        return filmStorage.deleteLike(idFilm, userId);
     }
 
     public List<Film> getTopFilms(int count) {

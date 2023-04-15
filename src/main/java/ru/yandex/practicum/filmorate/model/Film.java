@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.controller.FilmController;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -22,7 +22,7 @@ public class Film {
     private int id;
     @NotBlank
     private String name;
-    @Size(min = 1, max = InMemoryFilmStorage.LENGTH_OF_DESCRIPTION)
+    @Size(min = 1, max = FilmController.LENGTH_OF_DESCRIPTION)
     private String description;
     @NotNull
     private LocalDate releaseDate;
@@ -32,11 +32,12 @@ public class Film {
     private MPA mpa;
     private List<Genre> genres;
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration) {
-        this.id = id;
+    public Film(String name, String description, LocalDate releaseDate, int duration, MPA mpa, List<Genre> genres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
     }
 }

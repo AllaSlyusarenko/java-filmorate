@@ -137,14 +137,6 @@ public class FilmDbStorage implements FilmStorage {
         return fullGenres;
     }
 
-    private MPA makeMPA(ResultSet rs, int rowNum) throws SQLException {
-        return new MPA(rs.getInt("id_mpa"), rs.getString("name_mpa"));
-    }
-
-    private Genre makeGenre(ResultSet rs, int rowNum) throws SQLException {
-        return new Genre(rs.getInt("id_genre"), rs.getString("name_genre"));
-    }
-
     private MPA collectMPA(int id_mpa) {
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet("Select name_mpa from mpa where id_mpa = ?", id_mpa);
         if (mpaRows.next()) {
@@ -272,5 +264,5 @@ public class FilmDbStorage implements FilmStorage {
     public List<MPA> findAllMpa() {
         return jdbcTemplate.query("select * from mpa", mpaRowMapper());
     }
-    //какая-то валидация
+
 }
