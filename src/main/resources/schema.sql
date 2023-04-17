@@ -9,16 +9,16 @@ drop table if exists users;
 
 create table IF NOT EXISTS genres(
 id_genre serial not null primary key,
-name_genre varchar(255) not NULL
+name_genre varchar(25) not NULL
 );
 
 create table IF NOT EXISTS mpa(
 id_mpa serial not null primary key,
-name_mpa varchar(255) not NULL
+name_mpa varchar(25) not NULL
 );
 create table IF NOT EXISTS films(
 id_film serial not null primary key,
-name_film varchar(255) not null,
+name_film varchar(25) not null,
 description varchar(255) not null,
 release_date date not null,
 duration int not null,
@@ -26,9 +26,9 @@ id_mpa int not NULL references mpa(id_mpa)
 );
 create table IF NOT EXISTS users(
 id_user serial not null primary key,
-email varchar(255) not null,
-login varchar(255) not null,
-name_user varchar(255) not null,
+email varchar(35) not null,
+login varchar(25) not null,
+name_user varchar(25) not null,
 birthday date not NULL
 );
 
@@ -40,7 +40,7 @@ PRIMARY key(id_film,id_user)
 create table IF NOT EXISTS friendship(
 id_user int not null references users(id_user),
 id_friend int not null references users(id_user),
-status varchar(255) not NULL,
+status varchar(25) not NULL,
 PRIMARY key(id_user,id_friend)
 );
 

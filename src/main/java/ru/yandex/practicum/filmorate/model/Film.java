@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 
 import javax.validation.constraints.NotBlank;
@@ -13,10 +10,12 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@EqualsAndHashCode(of = {"id", "name", "description", "releaseDate", "duration", "mpa"})
 public class Film {
     @NotNull
     private int id;

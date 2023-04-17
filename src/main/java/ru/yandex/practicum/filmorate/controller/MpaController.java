@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/mpa")
 public class MpaController {
-    private FilmService filmService;
+    private final FilmService filmService;
     private final Logger log = LoggerFactory.getLogger(MpaController.class);
 
     @Autowired
@@ -24,12 +24,14 @@ public class MpaController {
     }
 
     @GetMapping("/{id}")
-    public MPA findGenreById(@PathVariable(value = "id") int id) {
+    public MPA findMpaById(@PathVariable(value = "id") int id) {
+        log.info("Просмотр рейтинга MPA по идентификатору");
         return filmService.getFilmStorage().findMpaById(id);
     }
 
     @GetMapping
     public List<MPA> findAllMpa() {
+        log.info("Просмотр всех рейтингов MPA");
         return filmService.getFilmStorage().findAllMpa();
     }
 }

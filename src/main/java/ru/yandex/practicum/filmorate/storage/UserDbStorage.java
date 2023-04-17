@@ -83,7 +83,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User put(User user) {
+    public User update(User user) {
         if (findUserById(user.getId()) == null) {
             throw new ValidationException("Невозможно обновить несуществующего пользователя");
         }
@@ -151,8 +151,7 @@ public class UserDbStorage implements UserStorage {
     public List<User> getFriends(int id) {
         String getFriendQuery = "Select *  FROM USERS u WHERE ID_USER IN " +
                 " (SELECT id_friend FROM FRIENDSHIP f WHERE id_user= ?) ";
-        List<User> friendsUser = jdbcTemplate.query(getFriendQuery, userRowMapper(), id);
-        return friendsUser;
+        return jdbcTemplate.query(getFriendQuery, userRowMapper(), id);
     }
 
     private RowMapper<User> userRowMapper() {
@@ -169,7 +168,6 @@ public class UserDbStorage implements UserStorage {
                 " SELECT  f1.id_friend FROM (Select * FROM friendship where id_user = ?) f1 join" +
                 " (select * from friendship WHERE id_user=?  ) f2 on f1.id_friend = f2.id_friend)";
 
-        List<User> commonUsers = jdbcTemplate.query(getCommonFriendQuery, userRowMapper(), id, otherId);
-        return commonUsers;
+        return jdbcTemplate.query(getCommonFriendQuery, userRowMapper(), id, otherId);
     }
 }

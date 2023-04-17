@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private FilmService filmService;
+    private final FilmService filmService;
     private final Logger log = LoggerFactory.getLogger(FilmController.class);
     private static final LocalDate DATE_OF_FIRST_FILM = LocalDate.of(1895, 12, 28);
     public static final int LENGTH_OF_DESCRIPTION = 200;
@@ -29,46 +29,47 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film findFilmById(@PathVariable(value = "id") int id) {
+        log.info("Просмотр фильма по идентификатору");
         return filmService.getFilmStorage().findFilmById(id);
     }
 
     @GetMapping
     public List<Film> findAll() {
+        log.info("Просмотр всех фильмов");
         return filmService.getFilmStorage().findAll();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        if (validationFilm(film)) {
-            return filmService.getFilmStorage().create(film);
-        } else {
-            throw new ValidationException("Фильм не прошел валидацию");
-        }
+        validationFilm(film);
+        log.info("Создан новый фильм");
+        return filmService.getFilmStorage().create(film);
     }
 
     @PutMapping
-    public Film put(@Valid @RequestBody Film film) {
-        if (validationFilm(film)) {
-            return filmService.getFilmStorage().put(film);
-        } else {
-            throw new ValidationException("Фильм не прошел валидацию");
-        }
+    public Film update(@Valid @RequestBody Film film) {
+        validationFilm(film);
+        log.info("Обновление фильма");
+        return filmService.getFilmStorage().update(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public boolean putLike(@PathVariable(value = "id") int id,
-                        @PathVariable(value = "userId") int userId) {
-        return filmService.putLike(id, userId);
+    public boolean addLike(@PathVariable(value = "id") int id,
+                           @PathVariable(value = "userId") int userId) {
+        log.info("Пользователь поставил фильму лайк");
+        return filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public boolean deleteLike(@PathVariable(value = "id") int id,
-                           @PathVariable(value = "userId") int userId) {
+                              @PathVariable(value = "userId") int userId) {
+        log.info("Пользователь удалил лайк у фильма");
         return filmService.deleteLike(id, userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "10") int count) {
+        log.info("Просмотр популярных фильмов");
         return filmService.getTopFilms(count);
     }
 

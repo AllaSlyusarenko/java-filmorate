@@ -28,7 +28,7 @@ public class FilmService {
         return filmStorage.getTopFilms(count);
     }
 
-    public boolean putLike(int idFilm, int userId) {
-        return filmStorage.putLike(idFilm, userId);
+    public boolean addLike(int idFilm, int userId) {
+        return filmStorage.addLike(idFilm, userId);
     }
 }

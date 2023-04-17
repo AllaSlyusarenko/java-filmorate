@@ -50,11 +50,11 @@ class UserDbStorageTest {
     }
 
     @Test
-    void put() {
+    void update() {
         User user1 = new User("user1@mail.ru", "user1_login", "user1_name", LocalDate.of(2012, 03, 15));
         userStorage.create(user1);
         User user2 = new User(1, "user2@mail.ru", "user2_login", "user2_name", LocalDate.of(2012, 03, 20));
-        userStorage.put(user2);
+        userStorage.update(user2);
         User userExpected = userStorage.findUserById(1);
         assertThat(userExpected.getId()).isEqualTo(1);
         assertThat(userExpected.getName()).isEqualTo("user2_name");

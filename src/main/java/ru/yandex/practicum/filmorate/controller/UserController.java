@@ -25,52 +25,55 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User findUserById(@PathVariable int id) { // get user by id
+        log.info("Просмотр пользователя по идентификатору");
         return userService.getUserStorage().findUserById(id);
     }
 
     @GetMapping
     public List<User> findAll() { // get all users
+        log.info("Просмотр всех пользователей");
         return userService.getUserStorage().findAll();
     }
 
     @PostMapping
     public User create(@RequestBody User user) { //add new user
-        if (validationUser(user)) {
-            return userService.getUserStorage().create(user);
-        } else {
-            throw new ValidationException("Валидация не пройдена");
-        }
+        validationUser(user);
+        log.info("Добавлен пользователь");
+        return userService.getUserStorage().create(user);
     }
 
     @PutMapping
-    public User put(@RequestBody User user) { //update user
-        if (validationUser(user)) {
-            return userService.getUserStorage().put(user);
-        } else {
-            throw new ValidationException("Валидация не пройдена");
-        }
+    public User update(@RequestBody User user) { //update user
+        validationUser(user);
+        log.info("Обновление пользователя");
+        return userService.getUserStorage().update(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public boolean addToFriends(@PathVariable(value = "id") int id,
                                 @PathVariable(value = "friendId") int friendId) {
+        log.info("Добавление пользователей в друзья");
         return userService.addToFriends(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public boolean deleteFromFriends(@PathVariable(value = "id") int id,
                                      @PathVariable(value = "friendId") int friendId) {
+        log.info("Удаление пользователей из друзей");
         return userService.deleteFromFriends(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
     public List<User> findAllFriends(@PathVariable(value = "id") int id) {
+
+        log.info("Найдены все друзья пользователя");
         return userService.getFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> findCommonFriends(@PathVariable(value = "id") int id,
                                         @PathVariable(value = "otherId") int otherId) {
+        log.info("Найдены все общие друзья пользователей");
         return userService.getCommonFriends(id, otherId);
     }
 

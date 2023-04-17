@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/genres")
 public class GenreController {
-    private FilmService filmService;
+    private final FilmService filmService;
     private final Logger log = LoggerFactory.getLogger(GenreController.class);
 
     @Autowired
@@ -25,12 +25,13 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public Genre findGenreById(@PathVariable(value = "id") int id) {
+        log.info("Просмотр жанра по идентификатору");
         return filmService.getFilmStorage().findGenreById(id);
     }
 
     @GetMapping
     public List<Genre> findAll() {
-
+        log.info("Получение всех жанров");
         return filmService.getFilmStorage().findAllGenres();
     }
 }

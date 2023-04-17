@@ -14,9 +14,9 @@ public interface FilmStorage {
 
     public Film create(Film film);
 
-    public Film put(Film film);
+    public Film update(Film film);
 
-    public boolean putLike(int id, int userId);
+    public boolean addLike(int id, int userId);
 
     public boolean deleteLike(int idFilm, int userId);
 

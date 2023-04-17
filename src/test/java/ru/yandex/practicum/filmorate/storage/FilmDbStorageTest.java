@@ -44,13 +44,13 @@ class FilmDbStorageTest {
 
 
     @Test
-    void put() {
+    void update() {
         Film film1 = new Film("Film1", "DescriptionFilm1", LocalDate.of(2015, 07, 06), 120,
                 new MPA(1, "G"), Collections.emptyList());
         filmStorage.create(film1);
         Film film2 = new Film(1, "Film2", "DescriptionFilm2", LocalDate.of(2015, 07, 05), 120,
                 new MPA(1, "G"), Collections.emptyList());
-        filmStorage.put(film2);
+        filmStorage.update(film2);
         Film filmExpected = filmStorage.findFilmById(1);
         assertThat(filmExpected.getId()).isEqualTo(1);
         assertThat(filmExpected.getName()).isEqualTo("Film2");

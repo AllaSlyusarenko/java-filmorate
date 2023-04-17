@@ -3,7 +3,8 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(of = "id")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder

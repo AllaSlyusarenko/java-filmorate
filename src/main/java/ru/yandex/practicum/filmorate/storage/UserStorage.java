@@ -12,7 +12,7 @@ public interface UserStorage {
 
     public User create(User user);
 
-    public User put(User user);
+    public User update(User user);
 
     public boolean addToFriends(int id, int friendId);
 
