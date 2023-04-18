@@ -122,8 +122,6 @@ public class FilmDbStorage implements FilmStorage {
 
         if (film.getGenres() != null) {
             insertFilmsGenresToDB(film.getId(), film.getGenres());
-        } else {
-            film.setGenres(Collections.emptyList());
         }
         return film;
     }
@@ -181,7 +179,6 @@ public class FilmDbStorage implements FilmStorage {
         }
         String sqlQuery = "update films set name_film= ?, description  = ?, release_date = ?, duration = ?," + " id_mpa = ? where id_film = ?";
         jdbcTemplate.update(sqlQuery, filmInc.getName(), filmInc.getDescription(), filmInc.getReleaseDate(), filmInc.getDuration(), filmInc.getMpa().getId(), filmInc.getId());
-
 
         filmOut.mpa(collectMPA(filmInc.getMpa().getId()));
         List<Genre> genresOut = collectAllGenres(filmInc);
