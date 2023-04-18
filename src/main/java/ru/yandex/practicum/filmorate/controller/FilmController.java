@@ -20,7 +20,7 @@ public class FilmController {
     private final FilmService filmService;
     private final Logger log = LoggerFactory.getLogger(FilmController.class);
     private static final LocalDate DATE_OF_FIRST_FILM = LocalDate.of(1895, 12, 28);
-    public static final int LENGTH_OF_DESCRIPTION = 200;
+    private static final int LENGTH_OF_DESCRIPTION = 200;
 
     @Autowired
     public FilmController(FilmService filmService) {
