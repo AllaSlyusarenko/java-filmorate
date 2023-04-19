@@ -20,11 +20,11 @@ public class UserService {
         return userStorage;
     }
 
-    public User addToFriends(int id, int friendId) {
+    public boolean addToFriends(int id, int friendId) {
         return userStorage.addToFriends(id, friendId);
     }
 
-    public User deleteFromFriends(int id, int friendId) {
+    public boolean deleteFromFriends(int id, int friendId) {
         return userStorage.deleteFromFriends(id, friendId);
     }
 

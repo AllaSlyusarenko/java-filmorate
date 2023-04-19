@@ -12,11 +12,11 @@ public interface UserStorage {
 
     public User create(User user);
 
-    public User put(User user);
+    public User update(User user);
 
-    public User addToFriends(int id, int friendId);
+    public boolean addToFriends(int id, int friendId);
 
-    public User deleteFromFriends(int id, int friendId);
+    public boolean deleteFromFriends(int id, int friendId);
 
     public List<User> getFriends(int id);
 
