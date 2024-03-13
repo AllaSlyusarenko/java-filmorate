@@ -46,5 +46,5 @@ FROM LikeUsers as lu
 WHERE f.id_film=1
 GROUP BY id_film;
 ```
-### Стек: Java 11, REST, Maven, Lombok, Junit5, Mockito, SQL, взаимодействие с БД через JDBC
+#### Стек: Java 11, REST, Maven, Lombok, Junit5, Mockito, SQL, взаимодействие с БД через JDBC
 #### проект создан: AllaSlyusarenko
